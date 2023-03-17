@@ -81,8 +81,8 @@ func init() {
 	rootCmd.PersistentFlags().IntP("size", "s", 64, "use <size> as number of data bytes to be sent")
 	rootCmd.PersistentFlags().IntP("interval", "i", 1000, "millisecond between sending each packet")
 	rootCmd.PersistentFlags().IntP("ttl", "t", 64, "define time to live")
-	rootCmd.PersistentFlags().BoolP("wait", "w", false, "whether to wait for server response, should be set in udp mode only, default false")
-	rootCmd.PersistentFlags().StringP("dns", "d", "", "specify the dns server instead of using the system default dns server")
+	rootCmd.PersistentFlags().BoolP("wait", "w", false, "whether to wait for server response, should be set in udp protocol only, default false")
+	rootCmd.PersistentFlags().StringP("dns", "d", "", "specify the dns server instead of using the system default dns server, tcp/udp protocol only")
 
 	viper.BindPFlag("protocol", rootCmd.PersistentFlags().Lookup("protocol"))
 	viper.BindPFlag("count", rootCmd.PersistentFlags().Lookup("count"))

@@ -111,16 +111,7 @@ func (p *L4Pinger) Ping() error {
 			dns += ":53"
 		}
 
-		_, err := net.DialTimeout(p.L4PingOptions.Protocol, dns, time.Duration(p.L4PingOptions.TTL)*time.Millisecond)
-		if err != nil {
-			return err
-		}
-		net.DefaultResolver = &net.Resolver{
-			PreferGo: false,
-			Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-				return net.Dial(network, dns)
-			},
-		}
+		net.DefaultResolver = NewResolver(dns)
 	}
 
 	remoteAddr := fmt.Sprintf("%s:%d", p.L4PingOptions.Host, p.L4PingOptions.Port)
@@ -220,6 +211,20 @@ func L4Ping(p *L4Pinger) error {
 	}
 	p.OnFinish()
 	return nil
+}
+
+func NewResolver(dns string) *net.Resolver {
+	// Create a custom resolver with your DNS server's IP address
+	resolver := &net.Resolver{
+		PreferGo: false,
+		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
+			dialer := &net.Dialer{
+				Timeout: time.Second * 5,
+			}
+			return dialer.Dial(network, dns)
+		},
+	}
+	return resolver
 }
 
 func NewL4Pinger(pingOptions *options.PingOptions) *L4Pinger {
